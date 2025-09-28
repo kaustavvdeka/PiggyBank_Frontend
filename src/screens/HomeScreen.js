@@ -164,12 +164,20 @@ export default function HomeScreen() {
         {/* Welcome Banner */}
         <Card style={styles.welcomeBanner}>
           <LinearGradient
-            colors={[colors.primary,  colors.primary]}
+            colors={[colors.primary, '#4a4ce0ff',]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             style={styles.gradient}
           >
-            <Card.Content>
-              <Title style={styles.welcomeTitle}>Welcome Back! 👋</Title>
-              <Paragraph style={styles.welcomeSubtitle}>Ready to take care of your poultry today?</Paragraph>
+            <Card.Content style={styles.welcomeCardContent}>
+              <View>
+                <Title style={styles.welcomeTitle}>Welcome Back! 👋</Title>
+                <Paragraph style={styles.welcomeSubtitle}>Ready to take care of your poultry today?</Paragraph>
+              </View>
+              <View style={styles.weatherWidget}>
+                <Text style={styles.weatherIcon}>☀️</Text>
+                <Text style={styles.weatherTemp}>28°C</Text>
+              </View>
             </Card.Content>
           </LinearGradient>
         </Card>
@@ -425,9 +433,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     
   },
+  welcomeCardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding:14
+  },
+  weatherWidget: {
+    alignItems: 'center',
+  },
+  weatherIcon: {
+    fontSize: 30,
+  },
+  weatherTemp: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+  },
   welcomeTitle: {
     fontSize: 20,
-    paddingTop:12,
     fontWeight: '700',
     color: '#fff',
     marginBottom: 4,
@@ -435,7 +459,6 @@ const styles = StyleSheet.create({
   welcomeSubtitle: {
     fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
-    paddingBottom:16
   },
   sectionHeader: {
     flexDirection: 'row',
