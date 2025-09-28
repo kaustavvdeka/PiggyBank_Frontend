@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,6 +10,8 @@ import { colors, shadow } from '../../src/theme';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar, Avatar, Badge, Button, Card, Text, Title, Paragraph, FAB, IconButton } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -52,14 +54,25 @@ export default function HomeScreen() {
   ];
 
   const [activeSlide, setActiveSlide] = React.useState(0);
+  const scrollViewRef = useRef(null);
 
-  // If you have local images, you can use require() instead of URIs
-  // const digilockerCarousel = [
-  //   { id: 1, image: require('../../assets/digilocker1.jpg') },
-  //   { id: 2, image: require('../../assets/digilocker2.jpg') },
-  //   { id: 3, image: require('../../assets/digilocker3.jpg') },
-  // ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSlide(prevSlide => {
+        const nextSlide = prevSlide === digilockerCarousel.length - 1 ? 0 : prevSlide + 1;
+        scrollViewRef.current.scrollTo({
+          x: nextSlide * (screenWidth - 20),
+          animated: true,
+        });
+        return nextSlide;
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+ 
   return (
     <View style={styles.container}>
       {/* Header Section */}
@@ -109,6 +122,7 @@ export default function HomeScreen() {
         
         <View style={styles.carouselContainer}>
           <ScrollView
+            ref={scrollViewRef}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
@@ -149,10 +163,15 @@ export default function HomeScreen() {
 
         {/* Welcome Banner */}
         <Card style={styles.welcomeBanner}>
-          <Card.Content>
-            <Title style={styles.welcomeTitle}>Welcome Back! 👋</Title>
-            <Paragraph style={styles.welcomeSubtitle}>Ready to take care of your poultry today?</Paragraph>
-          </Card.Content>
+          <LinearGradient
+            colors={[colors.primary,  colors.primary]}
+            style={styles.gradient}
+          >
+            <Card.Content>
+              <Title style={styles.welcomeTitle}>Welcome Back! 👋</Title>
+              <Paragraph style={styles.welcomeSubtitle}>Ready to take care of your poultry today?</Paragraph>
+            </Card.Content>
+          </LinearGradient>
         </Card>
 
         {/* Categories Section */}
@@ -396,14 +415,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
   },
 
+  gradient: {
+    borderRadius: 12,
+  },
+
   // Existing styles remain the same
   welcomeBanner: {
-    backgroundColor: colors.primary,
-    marginBottom: 24,
-    ...shadow.card,
+    backgroundColor: 'transparent',
+    marginBottom: 10,
+    
   },
   welcomeTitle: {
     fontSize: 20,
+    paddingTop:12,
     fontWeight: '700',
     color: '#fff',
     marginBottom: 4,
@@ -411,6 +435,7 @@ const styles = StyleSheet.create({
   welcomeSubtitle: {
     fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
+    paddingBottom:16
   },
   sectionHeader: {
     flexDirection: 'row',
