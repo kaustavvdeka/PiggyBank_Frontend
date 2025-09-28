@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  Image, 
-  TouchableOpacity,
-  ActivityIndicator,
-  Dimensions 
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import { apiGet } from '../api/client';
 import { colors, shadow } from '../../src/theme';
+import { ActivityIndicator, Avatar, Button, Card, Chip, Divider, Text, Title, Paragraph } from 'react-native-paper';
 
 const { width } = Dimensions.get('window');
 
@@ -188,7 +185,7 @@ export default function ProfileScreen({ route }) {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator animating={true} color={colors.primary} />
       </View>
     );
   }
@@ -196,108 +193,116 @@ export default function ProfileScreen({ route }) {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Profile Header */}
-      <View style={styles.profileHeader}>
-        <Image source={{ uri: profile.avatar }} style={styles.avatar} />
-        <View style={styles.profileInfo}>
-          <Text style={styles.name}>{profile.name}</Text>
-          <Text style={styles.username}>{profile.username}</Text>
-          <Text style={styles.bio}>{profile.bio}</Text>
+      <Card style={styles.profileHeader}>
+        <Card.Title
+          title={profile.name}
+          subtitle={profile.username}
+          left={(props) => <Avatar.Image {...props} source={{ uri: profile.avatar }} />}
+        />
+        <Card.Content>
+          <Paragraph>{profile.bio}</Paragraph>
           <Text style={styles.location}>📍 {profile.location}</Text>
           <Text style={styles.joinDate}>Joined {new Date(profile.joinDate).toLocaleDateString()}</Text>
-        </View>
-      </View>
+        </Card.Content>
+      </Card>
 
       {/* Stats Cards */}
       <View style={styles.statsGrid}>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{profile.stats.tasksCompleted}</Text>
-          <Text style={styles.statLabel}>Tasks Done</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{profile.stats.currentStreak}</Text>
-          <Text style={styles.statLabel}>Current Streak</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{profile.stats.longestStreak}</Text>
-          <Text style={styles.statLabel}>Longest Streak</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{profile.stats.animalsCared}</Text>
-          <Text style={styles.statLabel}>Animals</Text>
-        </View>
+        <Card style={styles.statCard}>
+          <Card.Content>
+            <Title style={styles.statNumber}>{profile.stats.tasksCompleted}</Title>
+            <Text style={styles.statLabel}>Tasks Done</Text>
+          </Card.Content>
+        </Card>
+        <Card style={styles.statCard}>
+          <Card.Content>
+            <Title style={styles.statNumber}>{profile.stats.currentStreak}</Title>
+            <Text style={styles.statLabel}>Current Streak</Text>
+          </Card.Content>
+        </Card>
+        <Card style={styles.statCard}>
+          <Card.Content>
+            <Title style={styles.statNumber}>{profile.stats.longestStreak}</Title>
+            <Text style={styles.statLabel}>Longest Streak</Text>
+          </Card.Content>
+        </Card>
+        <Card style={styles.statCard}>
+          <Card.Content>
+            <Title style={styles.statNumber}>{profile.stats.animalsCared}</Title>
+            <Text style={styles.statLabel}>Animals</Text>
+          </Card.Content>
+        </Card>
       </View>
 
       {/* Weekly Streak */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Weekly Streak - {animal}</Text>
-        <View style={styles.streakRow}>
-          {streak.map((day, index) => {
-            const date = new Date(day.date);
-            const dayName = date.toLocaleDateString('en', { weekday: 'short' });
-            return (
-              <View key={index} style={styles.streakDay}>
-                <Text style={styles.dayName}>{dayName}</Text>
-                <View 
-                  style={[
-                    styles.streakDot, 
-                    day.completed ? styles.streakOn : styles.streakOff
-                  ]} 
-                />
-                <Text style={styles.dayDate}>{date.getDate()}</Text>
-              </View>
-            );
-          })}
-        </View>
-      </View>
+      <Card style={styles.section}>
+        <Card.Content>
+          <Title style={styles.sectionTitle}>Weekly Streak - {animal}</Title>
+          <View style={styles.streakRow}>
+            {streak.map((day, index) => {
+              const date = new Date(day.date);
+              const dayName = date.toLocaleDateString('en', { weekday: 'short' });
+              return (
+                <View key={index} style={styles.streakDay}>
+                  <Text style={styles.dayName}>{dayName}</Text>
+                  <View 
+                    style={[
+                      styles.streakDot, 
+                      day.completed ? styles.streakOn : styles.streakOff
+                    ]} 
+                  />
+                  <Text style={styles.dayDate}>{date.getDate()}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </Card.Content>
+      </Card>
 
       {/* Contribution Chart */}
-      <View style={styles.section}>
-        <View style={styles.chartHeader}>
-          <Text style={styles.sectionTitle}>Activity Overview</Text>
-          <View style={styles.timeframeSelector}>
-            {['3months', '6months', '1year'].map(timeframe => (
-              <TouchableOpacity
-                key={timeframe}
-                style={[
-                  styles.timeframeButton,
-                  selectedTimeframe === timeframe && styles.timeframeButtonActive
-                ]}
-                onPress={() => setSelectedTimeframe(timeframe)}
-              >
-                <Text style={[
-                  styles.timeframeText,
-                  selectedTimeframe === timeframe && styles.timeframeTextActive
-                ]}>
+      <Card style={styles.section}>
+        <Card.Content>
+          <View style={styles.chartHeader}>
+            <Title style={styles.sectionTitle}>Activity Overview</Title>
+            <View style={styles.timeframeSelector}>
+              {['3months', '6months', '1year'].map(timeframe => (
+                <Button
+                  key={timeframe}
+                  mode={selectedTimeframe === timeframe ? 'contained' : 'text'}
+                  onPress={() => setSelectedTimeframe(timeframe)}
+                >
                   {timeframe === '3months' ? '3M' : timeframe === '6months' ? '6M' : '1Y'}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                </Button>
+              ))}
+            </View>
           </View>
-        </View>
-        
-        {renderContributionChart()}
-        
-        <View style={styles.chartStats}>
-          <Text style={styles.chartStat}>
-            Total tasks: <Text style={styles.chartStatValue}>{profile.stats.tasksCompleted}</Text>
-          </Text>
-          <Text style={styles.chartStat}>
-            Current streak: <Text style={styles.chartStatValue}>{profile.stats.currentStreak} days</Text>
-          </Text>
-        </View>
-      </View>
+          
+          {renderContributionChart()}
+          
+          <View style={styles.chartStats}>
+            <Text style={styles.chartStat}>
+              Total tasks: <Text style={styles.chartStatValue}>{profile.stats.tasksCompleted}</Text>
+            </Text>
+            <Text style={styles.chartStat}>
+              Current streak: <Text style={styles.chartStatValue}>{profile.stats.currentStreak} days</Text>
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
 
       {/* Recent Achievements */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Recent Achievements</Text>
-        <View style={styles.achievements}>
-          {['🏆 7-Day Streak', '🌱 Crop Master', '🐔 Poultry Expert', '📚 Quick Learner'].map((achievement, index) => (
-            <View key={index} style={styles.achievementBadge}>
-              <Text style={styles.achievementText}>{achievement}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
+      <Card style={styles.section}>
+        <Card.Content>
+          <Title style={styles.sectionTitle}>Recent Achievements</Title>
+          <View style={styles.achievements}>
+            {['🏆 7-Day Streak', '🌱 Crop Master', '🐔 Poultry Expert', '📚 Quick Learner'].map((achievement, index) => (
+              <Chip key={index} icon="trophy" style={styles.achievementBadge}>
+                {achievement}
+              </Chip>
+            ))}
+          </View>
+        </Card.Content>
+      </Card>
     </ScrollView>
   );
 }
@@ -309,11 +314,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   profileHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
     marginBottom: 20,
     marginTop: 40, // Add this line
   },
@@ -360,9 +360,6 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: '48%',
-    backgroundColor: colors.surface,
-    padding: 16,
-    borderRadius: 12,
     alignItems: 'center',
     marginBottom: 12,
     ...shadow.card,
@@ -423,28 +420,8 @@ const styles = StyleSheet.create({
   },
   timeframeSelector: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    padding: 4,
-  },
-  timeframeButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  timeframeButtonActive: {
-    backgroundColor: colors.primary,
-  },
-  timeframeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textMuted,
-  },
-  timeframeTextActive: {
-    color: '#FFFFFF',
   },
   chartContainer: {
-    backgroundColor: colors.surface,
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
@@ -496,13 +473,5 @@ const styles = StyleSheet.create({
   },
   achievementBadge: {
     backgroundColor: colors.primarySoft,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  achievementText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.primary,
   },
 });

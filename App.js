@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // If using Expo
 // If not using Expo, you can use: import Icon from 'react-native-vector-icons/Ionicons';
+import { Provider as PaperProvider, MD3LightTheme } from 'react-native-paper';
+import { colors } from './src/theme';
 
 import HomeScreen from './src/screens/HomeScreen';
 import MapScreen from './src/screens/MapScreen';
@@ -19,13 +21,21 @@ import MedicalConnectScreen from './src/screens/MedicalConnectScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+const theme = {
+  ...MD3LightTheme,
+  colors: {
+    ...MD3LightTheme.colors,
+    ...colors,
+  },
+};
+
 export default function App() {
   const navTheme = {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
       background: '#FFFFFF',
-      primary: '#6B8E23',
+      primary: colors.primary,
       card: '#FFFFFF',
       text: '#0B1F0E',
       border: '#E6EBD6',
@@ -34,58 +44,60 @@ export default function App() {
   };
 
   return (
-    <NavigationContainer theme={navTheme}>
-      <Stack.Navigator 
-        screenOptions={{ 
-          headerShown: false,
-          headerStyle: {
-            backgroundColor: '#6B8E23',
-          },
-          headerTintColor: '#FFFFFF',
-          headerTitleStyle: {
-            fontWeight: '600',
-          }
-        }}
-      >
-        <Stack.Screen name="MainTabs" component={MainTabs} />
-        <Stack.Screen 
-          name="Messages" 
-          component={MessagesScreen}
-          options={{
-            headerShown: true,
-            title: 'Messages',
-            headerBackTitle: 'Back',
+    <PaperProvider theme={theme}>
+      <NavigationContainer theme={navTheme}>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: colors.primary,
+            },
+            headerTintColor: '#FFFFFF',
+            headerTitleStyle: {
+              fontWeight: '600',
+            },
           }}
-        />
-        <Stack.Screen 
-          name="Category" 
-          component={CategoryScreen}
-          options={{
-            headerShown: true,
-            title: 'Categories',
-            headerBackTitle: 'Back',
-          }}
-        />
-        <Stack.Screen 
-          name="Notifications" 
-          component={NotificationsScreen}
-          options={{
-            headerShown: true,
-            title: 'Notifications',
-            headerBackTitle: 'Back',
-          }}
-        />
-        <Stack.Screen 
-          name="MedicalConnect" 
-          component={MedicalConnectScreen}
-          options={{
-            headerShown: true,
-            title: 'Medical Connect',
-            headerBackTitle: 'Back',
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+        >
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen
+            name="Messages"
+            component={MessagesScreen}
+            options={{
+              headerShown: true,
+              title: 'Messages',
+              headerBackTitle: 'Back',
+            }}
+          />
+          <Stack.Screen
+            name="Category"
+            component={CategoryScreen}
+            options={{
+              headerShown: true,
+              title: 'Categories',
+              headerBackTitle: 'Back',
+            }}
+          />
+          <Stack.Screen
+            name="Notifications"
+            component={NotificationsScreen}
+            options={{
+              headerShown: true,
+              title: 'Notifications',
+              headerBackTitle: 'Back',
+            }}
+          />
+          <Stack.Screen
+            name="MedicalConnect"
+            component={MedicalConnectScreen}
+            options={{
+              headerShown: true,
+              title: 'Medical Connect',
+              headerBackTitle: 'Back',
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
 
@@ -96,21 +108,21 @@ function MainTabs() {
         headerShown: false,
         tabBarStyle: styles.tabBar,
         tabBarShowLabel: true,
-        tabBarActiveTintColor: '#6B8E23',
+        tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: '#8E8E93',
         tabBarLabelStyle: styles.tabBarLabel,
       }}
     >
-      <Tab.Screen 
-        name="Home" 
+      <Tab.Screen
+        name="Home"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
-              <Ionicons 
-                name={focused ? "home" : "home-outline"} 
-                size={24} 
-                color={color} 
+              <Ionicons
+                name={focused ? 'home' : 'home-outline'}
+                size={24}
+                color={color}
               />
               {focused && <View style={styles.activeDot} />}
             </View>
@@ -118,16 +130,16 @@ function MainTabs() {
           tabBarLabel: 'Home',
         }}
       />
-      <Tab.Screen 
-        name="Map" 
+      <Tab.Screen
+        name="Map"
         component={MapScreen}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
-              <Ionicons 
-                name={focused ? "map" : "map-outline"} 
-                size={24} 
-                color={color} 
+              <Ionicons
+                name={focused ? 'map' : 'map-outline'}
+                size={24}
+                color={color}
               />
               {focused && <View style={styles.activeDot} />}
             </View>
@@ -135,17 +147,17 @@ function MainTabs() {
           tabBarLabel: 'Map',
         }}
       />
-      <Tab.Screen 
-        name="Post" 
+      <Tab.Screen
+        name="Post"
         component={PostScreen}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <View style={styles.centerIcon}>
               <View style={[styles.addButton, focused && styles.addButtonActive]}>
-                <Ionicons 
-                  name="add" 
-                  size={28} 
-                  color={focused ? "#FFFFFF" : "#6B8E23"} 
+                <Ionicons
+                  name="add"
+                  size={28}
+                  color={focused ? '#FFFFFF' : '#FFFFFF'}
                 />
               </View>
             </View>
@@ -153,16 +165,16 @@ function MainTabs() {
           tabBarLabel: 'Post',
         }}
       />
-      <Tab.Screen 
-        name="Shop" 
+      <Tab.Screen
+        name="Shop"
         component={ShopScreen}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
-              <Ionicons 
-                name={focused ? "cart" : "cart-outline"} 
-                size={24} 
-                color={color} 
+              <Ionicons
+                name={focused ? 'cart' : 'cart-outline'}
+                size={24}
+                color={color}
               />
               {focused && <View style={styles.activeDot} />}
             </View>
@@ -170,16 +182,16 @@ function MainTabs() {
           tabBarLabel: 'Shop',
         }}
       />
-      <Tab.Screen 
-        name="Profile" 
+      <Tab.Screen
+        name="Profile"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             <View style={focused ? styles.iconContainerActive : styles.iconContainer}>
-              <Ionicons 
-                name={focused ? "person" : "person-outline"} 
-                size={24} 
-                color={color} 
+              <Ionicons
+                name={focused ? 'person' : 'person-outline'}
+                size={24}
+                color={color}
               />
               {focused && <View style={styles.activeDot} />}
             </View>
@@ -230,7 +242,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#6B8E23',
+    backgroundColor: colors.primary,
   },
   centerIcon: {
     alignItems: 'center',
@@ -241,7 +253,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#6B8E23',
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 3,
