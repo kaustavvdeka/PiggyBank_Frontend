@@ -46,11 +46,12 @@ export default function HomeScreen() {
       image: 'https://img1.digitallocker.gov.in/digilocker-landing-page/assets/img/banner/promotional-mobile-5.jpg',
       title: 'Explore More Documents'
     },
-    {
-      id: 4,
-      image: 'https://img1.digitallocker.gov.in/digilocker-landing-page/assets/img/banner/promotional-mobile-4.jpg',
-      title: 'Get Started Today'
-    }
+    // {
+    //   id: 4,
+    //   image: { uri: '../../assets/framepromo.png' },
+    //   title: 'Get Started Today'
+    // }
+    
   ];
 
   const [activeSlide, setActiveSlide] = React.useState(0);
