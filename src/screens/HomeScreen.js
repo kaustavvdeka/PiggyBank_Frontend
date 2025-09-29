@@ -46,11 +46,11 @@ export default function HomeScreen() {
       image: 'https://img1.digitallocker.gov.in/digilocker-landing-page/assets/img/banner/promotional-mobile-5.jpg',
       title: 'Explore More Documents'
     },
-    // {
-    //   id: 4,
-    //   image: { uri: '../../assets/framepromo.png' },
-    //   title: 'Get Started Today'
-    // }
+    {
+      id: 4,
+      image: 'https://raw.githubusercontent.com/kaustavvdeka/PiggyBank_Frontend/refs/heads/parash/assets/framepromo.png',
+      title: 'Get Started Today'
+    }
     
   ];
 
@@ -85,7 +85,7 @@ export default function HomeScreen() {
           />
           <View>
             <Text style={styles.greeting}>Namaste,</Text>
-            <Text style={styles.username}>Farmer John</Text>
+            <Text style={styles.username}>Farmer Ravi</Text>
           </View>
         </View>
         
@@ -183,25 +183,27 @@ export default function HomeScreen() {
           </LinearGradient>
         </Card>
 
-        {/* Categories Section */}
+       {/* Categories Section */}
         <Text style={styles.sectionTitle}>Categories</Text>
         <View style={styles.categories}>
           {[
-            { name: 'Veterinary', icon: '🐔', color: '#FF6B6B' },
-            { name: 'Grooming', icon: '✂️', color: '#4ECDC4' },
-            { name: 'Core Product', icon: '📦', color: '#45B7D1' }
+            { name: 'Lets Learn', icon: 'https://cdn-icons-png.flaticon.com/128/6770/6770687.png', color: '#FF6B6B' },
+            { name: 'Lets Care', icon: 'https://cdn-icons-png.flaticon.com/128/5612/5612528.png', color: '#4ECDC4' },
+            { name: 'find Product', icon: 'https://cdn-icons-png.flaticon.com/128/18242/18242211.png', color: '#45B7D1' }
           ].map((category) => (
             <TouchableOpacity
               key={category.name}
               style={[styles.categoryBtn, { backgroundColor: category.color }]}
               onPress={() => navigation.navigate('Category', { category: category.name })}
             >
-              <Text style={styles.categoryIcon}>{category.icon}</Text>
+              <Image 
+                source={{ uri: category.icon }} 
+                style={styles.categoryIcon}
+              />
               <Text style={styles.categoryText}>{category.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
-
         {/* Nearby Posts Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Nearby Posts</Text>
@@ -482,8 +484,8 @@ const styles = StyleSheet.create({
   },
   categoryBtn: {
     borderRadius: 20,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     minHeight: 80,
     justifyContent: 'center',
     alignItems: 'center',
@@ -491,9 +493,10 @@ const styles = StyleSheet.create({
     minWidth: '30%',
   },
   categoryIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
+  width: 70,
+  height: 70,
+  marginBottom: 5,
+},
   categoryText: { 
     fontWeight: '600', 
     color: '#fff', 
