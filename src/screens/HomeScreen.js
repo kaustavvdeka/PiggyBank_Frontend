@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
-  Text,
-  TouchableOpacity,
   StyleSheet,
   Image,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { colors, shadow } from '../../src/theme';
 import { useNavigation } from '@react-navigation/native';
+import { Appbar, Avatar, Badge, Button, Card, Text, Title, Paragraph, FAB, IconButton } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+
+
+const { width: screenWidth } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -24,28 +29,63 @@ export default function HomeScreen() {
     { id: 2, title: 'Webinar Schedule', description: 'Join our poultry care webinar' },
   ];
 
+  // DigiLocker Carousel Images
+  const digilockerCarousel = [
+    {
+      id: 1,
+      image: 'https://img1.digitallocker.gov.in/digilocker-landing-page/assets/img/banner/promotional-mobile-2.jpg',
+      title: 'Drive hassle free with DigiLocker'
+    },
+    {
+      id: 2,
+      image: 'https://img1.digitallocker.gov.in/digilocker-landing-page/assets/img/banner/promotional-mobile-4.jpg',
+      title: 'Document Wallet for Citizens'
+    },
+    {
+      id: 3,
+      image: 'https://img1.digitallocker.gov.in/digilocker-landing-page/assets/img/banner/promotional-mobile-5.jpg',
+      title: 'Explore More Documents'
+    },
+    {
+      id: 4,
+      image: 'https://raw.githubusercontent.com/kaustavvdeka/PiggyBank_Frontend/refs/heads/parash/assets/framepromo.png',
+      title: 'Get Started Today'
+    }
+    
+  ];
+
+  const [activeSlide, setActiveSlide] = React.useState(0);
+  const scrollViewRef = useRef(null);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSlide(prevSlide => {
+        const nextSlide = prevSlide === digilockerCarousel.length - 1 ? 0 : prevSlide + 1;
+        scrollViewRef.current.scrollTo({
+          x: nextSlide * (screenWidth - 20),
+          animated: true,
+        });
+        return nextSlide;
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+ 
   return (
     <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.topBar}>
-        <TouchableOpacity 
-          style={styles.iconButton}
-          onPress={() => navigation.navigate('Notifications')}
-        >
-          <Text style={styles.icon}>🔔</Text>
-          <View style={styles.notificationBadge}>
-            <Text style={styles.badgeText}>3</Text>
-          </View>
-        </TouchableOpacity>
-        
         <View style={styles.profileWrap}>
           <Image
-            source={{ uri: 'https://placekitten.com/100/100' }}
+            source={{ uri: 'https://avatars.githubusercontent.com/u/196813405?v=4' }}
             style={styles.avatar}
           />
           <View>
-            <Text style={styles.greeting}>Hello,</Text>
-            <Text style={styles.username}>Farmer John</Text>
+            <Text style={styles.greeting}>Namaste,</Text>
+            <Text style={styles.username}>Farmer Ravi</Text>
           </View>
         </View>
         
@@ -62,6 +102,15 @@ export default function HomeScreen() {
           >
             <Text style={styles.icon}>🩺</Text>
           </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.iconButton}
+            onPress={() => navigation.navigate('Notifications')}
+          >
+            <Text style={styles.icon}>🔔</Text>
+            <View style={styles.notificationBadge}>
+              <Text style={styles.badgeText}>3</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -70,65 +119,115 @@ export default function HomeScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* Welcome Banner */}
-        <View style={styles.welcomeBanner}>
-          <View style={styles.welcomeText}>
-            <Text style={styles.welcomeTitle}>Welcome Back! 👋</Text>
-            <Text style={styles.welcomeSubtitle}>Ready to take care of your poultry today?</Text>
-          </View>
-          <View style={styles.weatherInfo}>
-            <Text style={styles.weatherIcon}>🌤️</Text>
-            <Text style={styles.weatherText}>28°C</Text>
+        {/* DigiLocker Carousel */}
+        
+        <View style={styles.carouselContainer}>
+          <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={(event) => {
+              const slide = Math.round(event.nativeEvent.contentOffset.x / (screenWidth - 40));
+              setActiveSlide(slide);
+            }}
+            scrollEventThrottle={16}
+          >
+            {digilockerCarousel.map((item) => (
+              <View key={item.id} style={styles.carouselSlide}>
+                <Image 
+                  source={{ uri: item.image }} 
+                  style={styles.carouselImage}
+                  resizeMode="cover"
+                />
+               
+                {/* <View style={styles.imageOverlay}>
+                  <Text style={styles.imageTitle}>{item.title}</Text>
+                </View> */}
+              </View>
+            ))}
+          </ScrollView>
+          
+          {/* Pagination Dots */}
+          <View style={styles.pagination}>
+            {digilockerCarousel.map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.paginationDot,
+                  index === activeSlide ? styles.paginationDotActive : styles.paginationDotInactive
+                ]}
+              />
+            ))}
           </View>
         </View>
 
-        {/* Categories Section */}
+        {/* Welcome Banner */}
+        <Card style={styles.welcomeBanner}>
+          <LinearGradient
+            colors={[colors.primary, '#4a4ce0ff',]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradient}
+          >
+            <Card.Content style={styles.welcomeCardContent}>
+              <View>
+                <Title style={styles.welcomeTitle}>Welcome Back! 👋</Title>
+                <Paragraph style={styles.welcomeSubtitle}>Ready to take care of your poultry today?</Paragraph>
+              </View>
+              <View style={styles.weatherWidget}>
+                <Text style={styles.weatherIcon}>☀️</Text>
+                <Text style={styles.weatherTemp}>28°C</Text>
+              </View>
+            </Card.Content>
+          </LinearGradient>
+        </Card>
+
+       {/* Categories Section */}
         <Text style={styles.sectionTitle}>Categories</Text>
         <View style={styles.categories}>
           {[
-            { name: 'Veterinary', icon: '🐔', color: '#FF6B6B' },
-            { name: 'Grooming', icon: '✂️', color: '#4ECDC4' },
-            { name: 'Core Product', icon: '📦', color: '#45B7D1' }
+            { name: 'Lets Learn', icon: 'https://cdn-icons-png.flaticon.com/128/6770/6770687.png', color: '#FF6B6B' },
+            { name: 'Lets Care', icon: 'https://cdn-icons-png.flaticon.com/128/5612/5612528.png', color: '#4ECDC4' },
+            { name: 'find Product', icon: 'https://cdn-icons-png.flaticon.com/128/18242/18242211.png', color: '#45B7D1' }
           ].map((category) => (
             <TouchableOpacity
               key={category.name}
               style={[styles.categoryBtn, { backgroundColor: category.color }]}
               onPress={() => navigation.navigate('Category', { category: category.name })}
             >
-              <Text style={styles.categoryIcon}>{category.icon}</Text>
+              <Image 
+                source={{ uri: category.icon }} 
+                style={styles.categoryIcon}
+              />
               <Text style={styles.categoryText}>{category.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
-
         {/* Nearby Posts Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Nearby Posts</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAllText}>See All</Text>
-          </TouchableOpacity>
+          <Button onPress={() => {}}>See All</Button>
         </View>
         <View style={styles.postsContainer}>
           {nearbyPosts.map((post) => (
-            <View key={post.id} style={[styles.postCard, post.urgent && styles.urgentCard]}>
-              <View style={styles.postHeader}>
-                <Text style={[styles.postTitle, post.urgent && styles.urgentText]}>
+            <Card key={post.id} style={[styles.postCard, post.urgent && styles.urgentCard]}>
+              <Card.Content>
+                <Title style={[styles.postTitle, post.urgent && styles.urgentText]}>
                   {post.title}
-                </Text>
-                {post.urgent && <Text style={styles.urgentBadge}>URGENT</Text>}
-              </View>
-              <Text style={styles.postDescription}>{post.description}</Text>
-              <Text style={styles.postTime}>2 hours ago</Text>
-            </View>
+                </Title>
+                <Badge visible={post.urgent} style={styles.urgentBadge}>URGENT</Badge>
+                <Paragraph style={styles.postDescription}>{post.description}</Paragraph>
+                <Text style={styles.postTime}>2 hours ago</Text>
+              </Card.Content>
+            </Card>
           ))}
         </View>
 
         {/* Tips Section */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Daily Tips</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAllText}>See All</Text>
-          </TouchableOpacity>
+          <Button onPress={() => {}}>See All</Button>
         </View>
         <ScrollView 
           horizontal 
@@ -136,55 +235,55 @@ export default function HomeScreen() {
           style={styles.tipsContainer}
         >
           {tips.map((tip) => (
-            <View key={tip.id} style={styles.tipCard}>
-              <View style={styles.tipIcon}>💡</View>
-              <Text style={styles.tipTitle}>{tip.title}</Text>
-              <Text style={styles.tipDescription}>{tip.description}</Text>
-              <TouchableOpacity style={styles.readMoreBtn}>
-                <Text style={styles.readMoreText}>Read More</Text>
-              </TouchableOpacity>
-            </View>
+            <Card key={tip.id} style={styles.tipCard}>
+              <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+              <Card.Content>
+                <Title style={styles.tipTitle}>{tip.title}</Title>
+                <Paragraph style={styles.tipDescription}>{tip.description}</Paragraph>
+              </Card.Content>
+              <Card.Actions>
+                <Button>Read More</Button>
+              </Card.Actions>
+            </Card>
           ))}
         </ScrollView>
 
         {/* Medical Connect Section */}
         <Text style={styles.sectionTitle}>Medical Connect</Text>
-        <TouchableOpacity
-          style={styles.medicalCard}
-          onPress={() => navigation.navigate('MedicalConnect')}
-        >
-          <View style={styles.medicalContent}>
-            <Text style={styles.medicalIcon}>🩺</Text>
-            <View style={styles.medicalText}>
-              <Text style={styles.medicalTitle}>Emergency Help</Text>
-              <Text style={styles.medicalSubtitle}>Connect with veterinarians instantly</Text>
-            </View>
-          </View>
-          <Text style={styles.medicalArrow}>→</Text>
-        </TouchableOpacity>
+        <Card onPress={() => navigation.navigate('MedicalConnect')}>
+          <Card.Title
+            title="Emergency Help"
+            subtitle="Connect with veterinarians instantly"
+            left={(props) => <Avatar.Icon {...props} icon="medical-bag" />}
+            right={(props) => <IconButton {...props} icon="arrow-right" onPress={() => navigation.navigate('MedicalConnect')} />}
+          />
+        </Card>
 
         {/* Quick Stats */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>42</Text>
-            <Text style={styles.statLabel}>Healthy Birds</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>3</Text>
-            <Text style={styles.statLabel}>Pending Tasks</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>98%</Text>
-            <Text style={styles.statLabel}>Feed Stock</Text>
-          </View>
-        </View>
+        <Card style={styles.statsContainer}>
+          <Card.Content style={styles.statsContent}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>42</Text>
+              <Text style={styles.statLabel}>Healthy Birds</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>3</Text>
+              <Text style={styles.statLabel}>Pending Tasks</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>98%</Text>
+              <Text style={styles.statLabel}>Feed Stock</Text>
+            </View>
+          </Card.Content>
+        </Card>
       </ScrollView>
 
       {/* FAB */}
-      <TouchableOpacity
+      <FAB
         style={styles.fab}
+        icon="robot"
         onPress={() =>
           fetch('http://localhost:4000/api/chatbot/ask', {
             method: 'POST',
@@ -195,10 +294,7 @@ export default function HomeScreen() {
             .then(() => {})
             .catch(() => {})
         }
-      >
-        <Text style={styles.fabIcon}>🤖</Text>
-        <View style={styles.fabPulse} />
-      </TouchableOpacity>
+      />
     </View>
   );
 }
@@ -207,6 +303,10 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: colors.background 
+  },
+  statsContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   topBar: {
     paddingTop: 60,
@@ -273,19 +373,85 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 100,
   },
+  
+  // Carousel Styles
+  carouselContainer: {
+    marginBottom: 20,
+  },
+  carouselSlide: {
+    width: screenWidth -40,
+    marginRight: 20,
+     borderRadius: 12,
+    overflow: 'hidden',
+    // ...shadow.card,
+  },
+  carouselImage: {
+    width: '100%',
+    height: 160,
+     borderRadius: 12,
+  },
+  imageOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    padding: 16,
+    // borderBottomLeftRadius: 16,
+    // borderBottomRightRadius: 16,
+  },
+  imageTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  paginationDotActive: {
+    backgroundColor: colors.primary,
+    width: 20,
+  },
+  paginationDotInactive: {
+    backgroundColor: colors.border,
+  },
+
+  gradient: {
+    borderRadius: 12,
+  },
+
+  // Existing styles remain the same
   welcomeBanner: {
+    backgroundColor: 'transparent',
+    marginBottom: 10,
+    
+  },
+  welcomeCardContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    backgroundColor: colors.primary,
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 24,
-    ...shadow.card,
+    padding:14
   },
-  welcomeText: {
-    flex: 1,
+  weatherWidget: {
+    alignItems: 'center',
+  },
+  weatherIcon: {
+    fontSize: 30,
+  },
+  weatherTemp: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
   },
   welcomeTitle: {
     fontSize: 20,
@@ -296,17 +462,6 @@ const styles = StyleSheet.create({
   welcomeSubtitle: {
     fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
-  },
-  weatherInfo: {
-    alignItems: 'center',
-  },
-  weatherIcon: {
-    fontSize: 24,
-    marginBottom: 4,
-  },
-  weatherText: {
-    color: '#fff',
-    fontWeight: '600',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -321,11 +476,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 12,
   },
-  seeAllText: {
-    color: colors.primary,
-    fontWeight: '600',
-    fontSize: 14,
-  },
   categories: { 
     flexDirection: 'row', 
     gap: 12, 
@@ -334,19 +484,19 @@ const styles = StyleSheet.create({
   },
   categoryBtn: {
     borderRadius: 20,
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     minHeight: 80,
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
     minWidth: '30%',
-    ...shadow.card,
   },
   categoryIcon: {
-    fontSize: 24,
-    marginBottom: 8,
-  },
+  width: 70,
+  height: 70,
+  marginBottom: 5,
+},
   categoryText: { 
     fontWeight: '600', 
     color: '#fff', 
@@ -358,19 +508,12 @@ const styles = StyleSheet.create({
   },
   postCard: {
     backgroundColor: colors.surface,
-    padding: 16,
     borderRadius: 12,
     ...shadow.card,
   },
   urgentCard: {
     borderLeftWidth: 4,
-    borderLeftColor: '#FF3B30',
-  },
-  postHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    borderLeftColor: colors.danger,
   },
   postTitle: {
     fontWeight: '600',
@@ -378,16 +521,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   urgentText: {
-    color: '#FF3B30',
+    color: colors.danger,
   },
   urgentBadge: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: colors.danger,
     color: '#fff',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 12,
-    fontSize: 10,
-    fontWeight: 'bold',
   },
   postDescription: {
     color: colors.textSecondary,
@@ -402,16 +540,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   tipCard: {
-    backgroundColor: colors.surface,
-    padding: 16,
-    borderRadius: 12,
     width: 200,
     marginRight: 12,
     ...shadow.card,
-  },
-  tipIcon: {
-    fontSize: 24,
-    marginBottom: 8,
   },
   tipTitle: {
     fontWeight: '600',
@@ -424,58 +555,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     flex: 1,
   },
-  readMoreBtn: {
-    backgroundColor: colors.primary,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    alignSelf: 'flex-start',
-  },
-  readMoreText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  medicalCard: {
-    backgroundColor: colors.surface,
-    padding: 20,
-    borderRadius: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    ...shadow.card,
-  },
-  medicalContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  medicalIcon: {
-    fontSize: 32,
-    marginRight: 12,
-  },
-  medicalText: {
-    flex: 1,
-  },
-  medicalTitle: {
-    fontWeight: '700',
-    color: colors.text,
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  medicalSubtitle: {
-    color: colors.textSecondary,
-    fontSize: 14,
-  },
-  medicalArrow: {
-    fontSize: 20,
-    color: colors.primary,
-    fontWeight: 'bold',
-  },
   statsContainer: {
-    flexDirection: 'row',
-    backgroundColor: colors.surface,
     borderRadius: 16,
-    padding: 20,
     marginTop: 16,
     ...shadow.card,
   },
@@ -501,27 +582,9 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    right: 20,
-    bottom: 30,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    margin: 16,
+    right: 0,
+    bottom: 0,
     backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...shadow.fab,
-  },
-  fabIcon: {
-    fontSize: 24,
-    color: '#fff',
-  },
-  fabPulse: {
-    position: 'absolute',
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: colors.primary,
-    opacity: 0.4,
-    zIndex: -1,
   },
 });

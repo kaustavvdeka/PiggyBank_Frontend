@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
   Alert,
 } from 'react-native';
 import { colors } from '../../src/theme';
 import { apiPost } from '../api/client';
 import { useNavigation } from '@react-navigation/native';
+import { TextInput, Button, Text } from 'react-native-paper';
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -22,26 +20,27 @@ export default function RegisterScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>
       <TextInput
+        label="Name"
         value={name}
         onChangeText={setName}
-        placeholder="Name"
         style={styles.input}
       />
       <TextInput
+        label="Email"
         value={email}
         onChangeText={setEmail}
-        placeholder="Email"
         style={styles.input}
       />
       <TextInput
+        label="Password"
         value={password}
         onChangeText={setPassword}
-        placeholder="Password"
         secureTextEntry
         style={styles.input}
       />
-      <TouchableOpacity
-        style={styles.btn}
+      <Button
+        mode="contained"
+        style={styles.button}
         onPress={async () => {
           try {
             await apiPost('/api/auth/register', { name, email, password });
@@ -52,8 +51,8 @@ export default function RegisterScreen() {
           }
         }}
       >
-        <Text style={styles.btnTxt}>Register</Text>
-      </TouchableOpacity>
+        Register
+      </Button>
     </View>
   );
 }
@@ -72,18 +71,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
     marginBottom: 12,
   },
-  btn: {
-    backgroundColor: colors.primary,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
+  button: {
+    marginTop: 12,
   },
-  btnTxt: { color: colors.secondary, fontWeight: '700' },
 });

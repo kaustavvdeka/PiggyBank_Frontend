@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../src/theme';
 import { useAuth } from '../context/AuthContext';
+import { TextInput, Button, Text } from 'react-native-paper';
 
 export default function LoginScreen() {
   const { loginDemo } = useAuth();
@@ -22,24 +20,24 @@ export default function LoginScreen() {
         Login with demo credentials or proceed to register.
       </Text>
       <TextInput
+        label="Email"
         value={email}
         onChangeText={setEmail}
-        placeholder="Email"
         style={styles.input}
       />
       <TextInput
+        label="Password"
         value={password}
         onChangeText={setPassword}
-        placeholder="Password"
         secureTextEntry
         style={styles.input}
       />
-      <TouchableOpacity style={styles.loginBtn} onPress={loginDemo}>
-        <Text style={styles.loginTxt}>Login (Demo)</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.link}>Create an account</Text>
-      </TouchableOpacity>
+      <Button mode="contained" onPress={loginDemo} style={styles.button}>
+        Login (Demo)
+      </Button>
+      <Button mode="text" onPress={() => navigation.navigate('Register')} style={styles.button}>
+        Create an account
+      </Button>
     </View>
   );
 }
@@ -59,24 +57,9 @@ const styles = StyleSheet.create({
   },
   subtitle: { color: colors.textMuted, marginBottom: 20 },
   input: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
     marginBottom: 12,
   },
-  loginBtn: {
-    backgroundColor: colors.primary,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  loginTxt: { color: colors.secondary, fontWeight: '700' },
-  link: {
-    color: colors.primary,
+  button: {
     marginTop: 12,
-    textAlign: 'center',
-    fontWeight: '600',
   },
 });
