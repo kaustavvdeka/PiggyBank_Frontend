@@ -14,7 +14,7 @@ Pashunestha is a mobile application designed to support farmers in Assam, India,
 
 ## Screenshot
 
-<img src="assets/homeScreen.png" width="400"  alt="App Screenshot">
+<img src="assets/homeScreen.png" width="300"  alt="App Screenshot">
 
 ## Getting Started
 
