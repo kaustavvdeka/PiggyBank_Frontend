@@ -321,7 +321,7 @@ export default function PostScreen() {
                   ]}
                   placeholder={
                     postType === 'alert' 
-                      ? 'Share important alert or warning...' 
+                      ? 'Share important alert or warning.' 
                       : 'What would you like to share?'
                   }
                   placeholderTextColor="#999"
