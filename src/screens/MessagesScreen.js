@@ -73,7 +73,7 @@ export default function MessagesScreen({ navigation, route }) {
     {
       _id: '5',
       from: demoPeer.id,
-      content: 'I recommend isolating her and checking for respiratory issues. Would you like to schedule a video consultation?',
+      content: 'I recommend isolating her and checking for respiratory issues. Would you like to schedule a video consultation???',
       ts: Date.now() - 3200000,
       type: 'text',
       read: true
